@@ -8,14 +8,21 @@ from typing import Dict, List, Any
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
+from llm_config import LLMConfig, initialize_llm
 
 logger = logging.getLogger(__name__)
 
 class PlannerAgent:
     """Agent responsible for creating research plans and coordinating workflow"""
     
-    def __init__(self, model_name: str = "gpt-4o-mini"):
-        self.llm = ChatOpenAI(model=model_name, temperature=0.1)
+    def __init__(self, llm_config: Optional[LLMConfig] = None):
+        if llm_config is None:
+            llm_config = LLMConfig(
+            provider="groq",
+            model_name="gemma2-9b-it",
+            temperature=0.1
+        )
+        self.llm = initialize_llm(llm_config)
         self.planning_prompt = self._create_planning_prompt()
     
     def _create_planning_prompt(self) -> ChatPromptTemplate:
