@@ -10,14 +10,21 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langsmith import Client
+from llm_config import LLMConfig, initialize_llm
 
 logger = logging.getLogger(__name__)
 
 class SupervisorAgent:
     """Agent responsible for finalizing research output and managing human interaction"""
     
-    def __init__(self, model_name: str = "gpt-4-turbo-preview"):
-        self.llm = ChatOpenAI(model=model_name, temperature=0.2)
+    def __init__(self, llm_config: Optional[LLMConfig] = None):
+        if llm_config is None:
+            llm_config = LLMConfig(
+            provider="groq",
+            model_name="llama-3.2-70b-versatile",
+            temperature=0.1
+        )
+        self.llm = initialize_llm(llm_config)
         self.langsmith_client = Client()
         self.supervision_prompt = self._create_supervision_prompt()
         self.feedback_prompt = self._create_feedback_prompt()
