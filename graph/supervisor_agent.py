@@ -10,7 +10,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langsmith import Client
-from llm_config import LLMConfig, initialize_llm
+from .llm_config import LLMConfig, initialize_llm
 
 logger = logging.getLogger(__name__)
 

@@ -4,11 +4,11 @@ Planner Agent - Creates research plans and coordinates workflow
 
 import json
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
-from llm_config import LLMConfig, initialize_llm
+from .llm_config import LLMConfig, initialize_llm
 
 logger = logging.getLogger(__name__)
 

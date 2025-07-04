@@ -9,6 +9,7 @@ import asyncio
 import os
 from typing import Dict, Any
 from datetime import datetime
+import uuid
 
 # Import our graph and components
 from graph.research_graph import create_research_graph
@@ -57,7 +58,8 @@ async def process_research_query(query: str, preferences: Dict[str, Any]) -> Dic
         "human_feedback": "",
         "final_output": "",
         "requires_human_input": False,
-        "iteration_count": 0
+        "iteration_count": 0,
+        "thread_id": str(uuid.uuid4())
     }
     
     # Run the graph
