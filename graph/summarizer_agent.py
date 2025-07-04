@@ -10,7 +10,7 @@ from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
 import json
 import asyncio
-from llm_config import LLMConfig, initialize_llm
+from .llm_config import LLMConfig, initialize_llm
 
 logger = logging.getLogger(__name__)
 

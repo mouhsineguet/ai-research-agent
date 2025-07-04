@@ -3,7 +3,7 @@ Research Graph - Main LangGraph implementation
 Coordinates all agents in the research assistant workflow
 """
 
-from typing import Dict, List, Any, Literal
+from typing import Dict, List, Any, Literal, Optional
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import HumanMessage, AIMessage
