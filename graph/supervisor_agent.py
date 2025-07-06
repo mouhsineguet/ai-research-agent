@@ -21,7 +21,7 @@ class SupervisorAgent:
         if llm_config is None:
             llm_config = LLMConfig(
             provider="groq",
-            model_name="llama-3.2-70b-versatile",
+            model_name="llama-3.3-70b-versatile",
             temperature=0.1
         )
         self.llm = initialize_llm(llm_config)
@@ -113,11 +113,20 @@ Please analyze this feedback and suggest how to improve the research output."""
         try:
             logger.info("Supervisor: Finalizing research output")
             
+            # Limit to top 5 papers and summaries, truncate abstracts
+            max_papers = 5
+            truncated_papers = [
+                {**p, "abstract": p.get("abstract", "")[:500] + ("..." if len(p.get("abstract", "")) > 500 else "")} for p in papers[:max_papers]
+            ]
+            truncated_summaries = summaries[:max_papers]
+
             # Prepare prompt inputs
             prompt_inputs = {
                 "query": query,
-                "papers": json.dumps(papers, indent=2),
-                "summaries": "\n\n".join(summaries),
+                "papers": json.dumps(truncated_papers, indent=2),
+                "summaries": "\n\n".join(
+                    s if isinstance(s, str) else json.dumps(s, indent=2) for s in truncated_summaries
+                ),
                 "critique": critique,
                 "recommendations": json.dumps(recommendations, indent=2),
                 "human_feedback": human_feedback or "No human feedback provided"
@@ -179,7 +188,6 @@ Please analyze this feedback and suggest how to improve the research output."""
     
     def _process_final_output(self, content: str) -> Dict[str, Any]:
         """Process and structure the final output"""
-        
         try:
             # Try to parse as JSON if it's in JSON format
             if "```json" in content:
@@ -187,7 +195,10 @@ Please analyze this feedback and suggest how to improve the research output."""
                 json_end = content.find("```", json_start)
                 json_text = content[json_start:json_end].strip()
                 return json.loads(json_text)
-            
+            try:
+                return json.loads(content)
+            except Exception:
+                pass
             # Otherwise, structure the content
             sections = content.split("\n\n")
             structured_output = {
@@ -198,7 +209,6 @@ Please analyze this feedback and suggest how to improve the research output."""
                 "quality_assessment": {},
                 "feedback_integration": ""
             }
-            
             current_section = None
             for section in sections:
                 if "Executive Summary" in section:
@@ -223,9 +233,7 @@ Please analyze this feedback and suggest how to improve the research output."""
                         structured_output[current_section][key.strip()] = value.strip()
                     except ValueError:
                         continue
-            
             return structured_output
-            
         except Exception as e:
             logger.error(f"Error processing final output: {str(e)}")
             return self._create_fallback_output("", [], [])

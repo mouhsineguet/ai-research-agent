@@ -59,7 +59,7 @@ async def process_research_query(query: str, preferences: Dict[str, Any]) -> Dic
         "final_output": "",
         "requires_human_input": False,
         "iteration_count": 0,
-        "thread_id": str(uuid.uuid4())
+        #"thread_id": str(uuid.uuid4())
     }
     
     # Run the graph

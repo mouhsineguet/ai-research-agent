@@ -58,7 +58,7 @@ class LLMConfig(BaseModel):
             elif provider == 'openai':
                 base_url = "https://api.openai.com/v1"  # Default OpenAI URL
             elif provider == 'groq':
-                base_url = "https://api.groq.com/openai/v1"  # Default Groq URL
+                base_url = "https://api.groq.com"  # Default Groq URL
                 
         return base_url
 

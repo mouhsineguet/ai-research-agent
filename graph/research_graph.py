@@ -8,6 +8,7 @@ from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import HumanMessage, AIMessage
 import logging
+import json
 
 # Import agents
 from .planner_agent import PlannerAgent
@@ -107,10 +108,13 @@ def create_research_graph():
             summaries=state.summaries
         )
         
+        # Convert critique result to string format for supervisor
+        critique_text = json.dumps(critique_result, indent=2)
+        
         return {
-            "critique": critique_result["critique"],
-            "recommendations": critique_result["recommendations"],
-            "requires_human_input": critique_result["needs_human_input"],
+            "critique": critique_text,  # Convert to string for supervisor
+            "recommendations": critique_result.get("recommendations", []),
+            "requires_human_input": critique_result.get("needs_human_input", False),
             "current_agent": "critique"
         }
     
@@ -216,11 +220,8 @@ def create_research_graph():
     workflow.add_edge("human_input", "supervisor")
     workflow.add_edge("supervisor", END)
     
-    # Add memory
-    memory = MemorySaver()
-    
     # Compile the graph
-    app = workflow.compile(checkpointer=memory)
+    app = workflow.compile()
     
     return app
 

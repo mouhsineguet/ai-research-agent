@@ -171,13 +171,22 @@ Please provide a comprehensive critique of this research."""
                 self.critique_prompt.format_messages(**prompt_inputs)
             )
             
-            # Parse response
-            try:
-                critique_result = self.critique_parser.parse(response.content)
-                result = critique_result.dict()
-            except Exception as e:
-                logger.warning(f"Failed to parse critique, using fallback: {str(e)}")
+            # Check if response is valid
+            if not response or not response.content or response.content.strip() == "":
+                logger.warning("Empty response from LLM, using fallback")
                 result = self._create_fallback_critique(query, papers, summaries, user_preferences)
+            else:
+                # Log the response for debugging
+                logger.debug(f"LLM Response: {response.content[:500]}...")
+                
+                # Parse response
+                try:
+                    critique_result = self.critique_parser.parse(response.content)
+                    result = critique_result.dict()
+                except Exception as e:
+                    logger.warning(f"Failed to parse critique, using fallback. Error: {str(e)}")
+                    logger.warning(f"Raw response: {response.content}")
+                    result = self._create_fallback_critique(query, papers, summaries, user_preferences)
             
             # Add metadata
             result['evaluation_timestamp'] = self._get_timestamp()
@@ -215,26 +224,9 @@ Please provide a comprehensive critique of this research."""
     
     def _create_fallback_critique(self, query: str, papers: List[Dict[str, Any]], summaries: List[Dict[str, Any]], user_preferences: Dict[str, Any]) -> Dict[str, Any]:
         """Create a fallback critique when AI analysis fails"""
-        
         return {
-            "quality_assessment": {
-                "overall_score": 5,
-                "relevance_score": 5,
-                "credibility_score": 5,
-                "completeness_score": 5,
-                "methodology_score": 5,
-                "strengths": ["Research covers the basic query requirements"],
-                "weaknesses": ["Limited analysis due to processing error"],
-                "bias_indicators": ["Unable to assess bias due to processing error"]
-            },
-            "gap_analysis": {
-                "missing_areas": ["Unable to identify gaps due to processing error"],
-                "conflicting_evidence": [],
-                "methodological_gaps": [],
-                "temporal_gaps": [],
-                "geographic_gaps": [],
-                "theoretical_gaps": []
-            },
+            "quality_assessment": {},
+            "gap_analysis": {},
             "recommendations": [
                 "Review the research manually for quality assessment",
                 "Consider expanding the search scope",
