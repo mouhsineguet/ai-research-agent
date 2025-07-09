@@ -63,6 +63,12 @@ User Input
    v
 [Output + LangSmith Trace + Score]
 ```
+## Research Workflow Graph
+
+![Research Workflow Graph](graph_viz.png)
+
+*The research workflow visualized as a directed graph.*
+
 
 ## 📁 Project Structure
 
@@ -130,55 +136,7 @@ User Input
 7. **Evaluation**: LangSmith traces and scores the process
 
 
-## Research Workflow Graph (ASCII)
 
-```
-                      +-----------+
-                      | __start__ |
-                      +-----------+
-                             *
-                             *
-                             *
-                        +---------+
-                        | planner |
-                        +---------+
-                             *
-                             *
-                             *
-                         +------+
-                         | tool |
-                         +------+
-                             *
-                             *
-                             *
-                      +------------+
-                      | summarizer |
-                      +------------+
-                       ..              ...
-                     ..                   ...
-                    .                        ....
-            +----------+                         ..
-            | critique |                          .
-            +----------+                          .
-            ...        ...                        .
-           .              .                       .
-         ..                ...                    .
-+-------------+               .                  ..
-| human_input |               .              ....
-+-------------+**             .           ...
-                 ***         .         ...
-                    ****     .     ....
-                        **   .   ..
-                      +------------+
-                      | supervisor |
-                      +------------+
-                             *
-                             *
-                             *
-                        +---------+
-                        | __end__ |
-                        +---------+
-``` 
 
 ## 📊 Evaluation
 
