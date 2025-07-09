@@ -129,6 +129,57 @@ User Input
 6. **Output**: Final research summary with next steps
 7. **Evaluation**: LangSmith traces and scores the process
 
+
+## Research Workflow Graph (ASCII)
+
+```
+                      +-----------+
+                      | __start__ |
+                      +-----------+
+                             *
+                             *
+                             *
+                        +---------+
+                        | planner |
+                        +---------+
+                             *
+                             *
+                             *
+                         +------+
+                         | tool |
+                         +------+
+                             *
+                             *
+                             *
+                      +------------+
+                      | summarizer |
+                      +------------+
+                       ..              ...
+                     ..                   ...
+                    .                        ....
+            +----------+                         ..
+            | critique |                          .
+            +----------+                          .
+            ...        ...                        .
+           .              .                       .
+         ..                ...                    .
++-------------+               .                  ..
+| human_input |               .              ....
++-------------+**             .           ...
+                 ***         .         ...
+                    ****     .     ....
+                        **   .   ..
+                      +------------+
+                      | supervisor |
+                      +------------+
+                             *
+                             *
+                             *
+                        +---------+
+                        | __end__ |
+                        +---------+
+``` 
+
 ## 📊 Evaluation
 
 The system uses LangSmith for:
@@ -142,6 +193,3 @@ The system uses LangSmith for:
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📝 License
-
-MIT License - See LICENSE file for details 
